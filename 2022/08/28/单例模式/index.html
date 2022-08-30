@@ -13,7 +13,7 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
@@ -259,10 +259,42 @@
 <li><a href="#anchor2">静态代码块实现饿汉式单例</a></li>
 </ol>
 <h4 id="饿汉式单例"><a href="#饿汉式单例" class="headerlink" title="饿汉式单例"></a><span id="anchor1">饿汉式单例</span></h4><p>在饿汉式单例实现中，单例类的实例是在类加载时创建的，这是创建单例类的简单方法，同时也是线程安全的，但它有一个缺点，即当客户端应用程序不使用该单例时也会创建实例。下面是静态初始化单例类的实现：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.sillyfish.designpattern.creational.singleton;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">EagerInitializedSingleton</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">EagerInitializedSingleton</span> <span class="variable">instance</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">EagerInitializedSingleton</span>();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// private constructor to avoid client applications to use constructor</span></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">EagerInitializedSingleton</span><span class="params">()</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> EagerInitializedSingleton <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">package</span> <span class="token namespace">cn<span class="token punctuation">.</span>sillyfish<span class="token punctuation">.</span>designpattern<span class="token punctuation">.</span>creational<span class="token punctuation">.</span>singleton</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">EagerInitializedSingleton</span> <span class="token punctuation">&#123;</span>
+    
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">EagerInitializedSingleton</span> instance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">EagerInitializedSingleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    
+    <span class="token comment">// private constructor to avoid client applications to use constructor</span>
+    <span class="token keyword">private</span> <span class="token class-name">EagerInitializedSingleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">EagerInitializedSingleton</span> <span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> instance<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
 
 <h4 id="静态代码块实现饿汉式单例"><a href="#静态代码块实现饿汉式单例" class="headerlink" title="静态代码块实现饿汉式单例"></a><span id="anchor2">静态代码块实现饿汉式单例</span></h4><p>通过静态代码块实现饿汉式单例，便可以在静态代码块中处理异常：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.sillyfish.designpattern.creational.singleton;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">StaticBlockSingleton</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> StaticBlockSingleton instance;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">StaticBlockSingleton</span><span class="params">()</span> &#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// static block initialization for exception handling</span></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            instance = <span class="keyword">new</span> <span class="title class_">StaticBlockSingleton</span>();</span><br><span class="line">        &#125; <span class="keyword">catch</span>(Exception e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;Exception occurred in creating singleton instance&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> StaticBlockSingleton <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">package</span> <span class="token namespace">cn<span class="token punctuation">.</span>sillyfish<span class="token punctuation">.</span>designpattern<span class="token punctuation">.</span>creational<span class="token punctuation">.</span>singleton</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">StaticBlockSingleton</span> <span class="token punctuation">&#123;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token class-name">StaticBlockSingleton</span> instance<span class="token punctuation">;</span>
+    
+    <span class="token keyword">private</span> <span class="token class-name">StaticBlockSingleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+    
+    <span class="token comment">// static block initialization for exception handling</span>
+    <span class="token keyword">static</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">&#123;</span>
+            instance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StaticBlockSingleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span> <span class="token keyword">catch</span><span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span><span class="token string">"Exception occurred in creating singleton instance"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+    
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">StaticBlockSingleton</span> <span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> instance<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
 
 <p>懒汉式这种提前创建实例的实现方式仅适用于单例类不占用大量的资源情况下，但在多数情况下，单例类是为了文件系统、数据库连接等资源创建的，除非客户端调用<code>getInstance()</code>方法，否则应该避免实例化。</p>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://www.digitalocean.com/community/tutorials/java-singleton-design-pattern-best-practices-examples">【1】Java Singleton Design Pattern Best Practices with Examples</a></p>
