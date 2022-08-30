@@ -20,15 +20,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="单例模式是GoF设计模式之一，属于Creational Design Pattern(创造性设计模式)类别。从定义来看，它是一个非常简单的设计模式，但在实现时依然存在诸多方面的问题(如多线程和安全性问题)。本文将学习单例设计模式的原则、实现单例设计模式的不同方法以及一些使用它的最佳实践。 单例模式简介  单例模式限制类的实例化，并确保在java虚拟机中只存在该类的一个实例  单例类必须提供全局访问">
+    <meta name="description" content="单例模式是GoF设计模式之一，属于创造性设计模式（Creational Design Pattern）。从定义来看，它是一个非常简单的设计模式，但在实现时依然存在诸多方面的问题(如线程安全和单例破坏等问题)。本文将简述单例模式的原则、实现及一些最佳实践。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="单例模式">
 <meta property="og:url" content="http://example.com/2022/08/28/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/index.html">
 <meta property="og:site_name" content="很鱼的鱼">
-<meta property="og:description" content="单例模式是GoF设计模式之一，属于Creational Design Pattern(创造性设计模式)类别。从定义来看，它是一个非常简单的设计模式，但在实现时依然存在诸多方面的问题(如多线程和安全性问题)。本文将学习单例设计模式的原则、实现单例设计模式的不同方法以及一些使用它的最佳实践。 单例模式简介  单例模式限制类的实例化，并确保在java虚拟机中只存在该类的一个实例  单例类必须提供全局访问">
+<meta property="og:description" content="单例模式是GoF设计模式之一，属于创造性设计模式（Creational Design Pattern）。从定义来看，它是一个非常简单的设计模式，但在实现时依然存在诸多方面的问题(如线程安全和单例破坏等问题)。本文将简述单例模式的原则、实现及一些最佳实践。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-08-28T12:44:27.000Z">
-<meta property="article:modified_time" content="2022-08-30T03:50:43.280Z">
+<meta property="article:modified_time" content="2022-08-30T16:57:24.842Z">
 <meta property="article:author" content="John Mayer">
 <meta name="twitter:card" content="summary">
 
@@ -116,7 +116,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">单例模式简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">单例模式的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A5%BF%E6%B1%89%E5%BC%8F%E5%8D%95%E4%BE%8B"><span class="nav-number">2.1.</span> <span class="nav-text">饿汉式单例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E4%BB%A3%E7%A0%81%E5%9D%97%E5%AE%9E%E7%8E%B0%E9%A5%BF%E6%B1%89%E5%BC%8F%E5%8D%95%E4%BE%8B"><span class="nav-number">2.2.</span> <span class="nav-text">静态代码块实现饿汉式单例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A5%BF%E6%B1%89%E5%BC%8F%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.1.</span> <span class="nav-text">饿汉式实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.1.1.</span> <span class="nav-text">简单实现</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E4%BB%A3%E7%A0%81%E5%9D%97%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.1.2.</span> <span class="nav-text">静态代码块实现</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.1.3.</span> <span class="nav-text">枚举类实现</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%87%92%E6%B1%89%E5%BC%8F%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.2.</span> <span class="nav-text">懒汉式实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">简单实现</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#synchronized%E4%BF%9D%E8%AF%81%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8"><span class="nav-number">2.2.2.</span> <span class="nav-text">synchronized保证线程安全</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8F%8C%E6%A3%80%E9%94%81%EF%BC%88DCL-Lock%EF%BC%89%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.2.3.</span> <span class="nav-text">双检锁（DCL Lock）实现</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E5%86%85%E9%83%A8%E7%B1%BB%E5%AE%9E%E7%8E%B0%EF%BC%88Bill-Pugh-Singleton%EF%BC%89"><span class="nav-number">2.2.4.</span> <span class="nav-text">静态内部类实现（Bill Pugh Singleton）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%95%E4%BE%8B%E4%B8%8E%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">2.3.</span> <span class="nav-text">单例与序列化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -210,7 +210,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-08-30 11:50:43" itemprop="dateModified" datetime="2022-08-30T11:50:43+08:00">2022-08-30</time>
+      <time title="修改时间：2022-08-31 00:57:24" itemprop="dateModified" datetime="2022-08-31T00:57:24+08:00">2022-08-31</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -236,8 +236,10 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p><strong>单例模式</strong>是<strong>GoF设计模式</strong>之一，属于<strong>Creational Design Pattern(创造性设计模式)</strong>类别。从定义来看，它是一个非常简单的设计模式，但在实现时依然存在诸多方面的问题(如多线程和安全性问题)。本文将学习单例设计模式的原则、实现单例设计模式的不同方法以及一些使用它的最佳实践。</p>
-<h3 id="单例模式简介"><a href="#单例模式简介" class="headerlink" title="单例模式简介"></a>单例模式简介</h3><blockquote>
+        <p><strong>单例模式</strong>是<strong>GoF设计模式</strong>之一，属于<strong>创造性设计模式（Creational Design Pattern）</strong>。从定义来看，它是一个非常简单的设计模式，但在实现时依然存在诸多方面的问题(如线程安全和单例破坏等问题)。本文将简述单例模式的原则、实现及一些最佳实践。</p>
+<span id="more"></span>
+
+<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><blockquote>
 <ul>
 <li><p>单例模式限制类的实例化，并确保在java虚拟机中只存在该类的一个实例</p>
 </li>
@@ -245,7 +247,7 @@
 </li>
 </ul>
 </blockquote>
-<h3 id="单例模式的实现"><a href="#单例模式的实现" class="headerlink" title="单例模式的实现"></a>单例模式的实现</h3><p>单例模式可以有多种实现方式，但它们都有以下共同的条件：</p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>单例模式可以有多种实现方式，但它们都有以下共同的条件：</p>
 <blockquote>
 <ul>
 <li>构造函数私有，以限制通过构造函数构造多个实例</li>
@@ -253,16 +255,11 @@
 <li>返回类实例的公共静态方法，这是外部客户端获取单例类实例的全局接口</li>
 </ul>
 </blockquote>
-<p>接下来将介绍单例模式的不同实现及相关的问题：</p>
-<ol>
-<li><a href="#anchor1">饿汉式单例</a></li>
-<li><a href="#anchor2">静态代码块实现饿汉式单例</a></li>
-</ol>
-<h4 id="饿汉式单例"><a href="#饿汉式单例" class="headerlink" title="饿汉式单例"></a><span id="anchor1">饿汉式单例</span></h4><p>在饿汉式单例实现中，单例类的实例是在类加载时创建的，这是创建单例类的简单方法，同时也是线程安全的，但它有一个缺点，即当客户端应用程序不使用该单例时也会创建实例。下面是静态初始化单例类的实现：</p>
-<pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">package</span> <span class="token namespace">cn<span class="token punctuation">.</span>sillyfish<span class="token punctuation">.</span>designpattern<span class="token punctuation">.</span>creational<span class="token punctuation">.</span>singleton</span><span class="token punctuation">;</span>
+<p>通常根据是否提前实例化对象，可以分为<strong><a href="#eagerInitialization">饿汉式单例（Eager initialization）</a></strong>和<strong><a href="#lazyInitialization">懒汉式单例（Lazy Initialization）</a></strong>两种实现。</p>
+<h4 id="饿汉式实现"><a href="#饿汉式实现" class="headerlink" title="饿汉式实现"></a><span id="eagerInitialization">饿汉式实现</span></h4><p>饿汉式单例，即单例实例是在类加载时创建，是线程安全的，但它有一个缺点，即当客户端应用程序不使用该单例时也会创建实例。这种提前创建实例的实现方式仅适用于单例类不占用大量的资源情况下，但在多数情况下，单例类是为了文件系统、数据库连接等资源创建的，除非客户端调用<code>getInstance()</code>方法，否则应该避免实例化。</p>
+<h5 id="简单实现"><a href="#简单实现" class="headerlink" title="简单实现"></a>简单实现</h5><pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">package</span> <span class="token namespace">cn<span class="token punctuation">.</span>sillyfish<span class="token punctuation">.</span>designpattern<span class="token punctuation">.</span>creational<span class="token punctuation">.</span>singleton</span><span class="token punctuation">;</span>
 
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">EagerInitializedSingleton</span> <span class="token punctuation">&#123;</span>
-    
     <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">EagerInitializedSingleton</span> instance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">EagerInitializedSingleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     
     <span class="token comment">// private constructor to avoid client applications to use constructor</span>
@@ -273,11 +270,10 @@
     <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span></code></pre>
 
-<h4 id="静态代码块实现饿汉式单例"><a href="#静态代码块实现饿汉式单例" class="headerlink" title="静态代码块实现饿汉式单例"></a><span id="anchor2">静态代码块实现饿汉式单例</span></h4><p>通过静态代码块实现饿汉式单例，便可以在静态代码块中处理异常：</p>
+<h5 id="静态代码块实现"><a href="#静态代码块实现" class="headerlink" title="静态代码块实现"></a>静态代码块实现</h5><p>通过静态代码块实现饿汉式单例，可以在静态代码块中处理异常：</p>
 <pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">package</span> <span class="token namespace">cn<span class="token punctuation">.</span>sillyfish<span class="token punctuation">.</span>designpattern<span class="token punctuation">.</span>creational<span class="token punctuation">.</span>singleton</span><span class="token punctuation">;</span>
 
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">StaticBlockSingleton</span> <span class="token punctuation">&#123;</span>
-
     <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token class-name">StaticBlockSingleton</span> instance<span class="token punctuation">;</span>
     
     <span class="token keyword">private</span> <span class="token class-name">StaticBlockSingleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
@@ -286,7 +282,7 @@
     <span class="token keyword">static</span> <span class="token punctuation">&#123;</span>
         <span class="token keyword">try</span> <span class="token punctuation">&#123;</span>
             instance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StaticBlockSingleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">&#125;</span> <span class="token keyword">catch</span><span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token punctuation">&#125;</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
             <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span><span class="token string">"Exception occurred in creating singleton instance"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">&#125;</span>
     <span class="token punctuation">&#125;</span>
@@ -296,8 +292,118 @@
     <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span></code></pre>
 
-<p>懒汉式这种提前创建实例的实现方式仅适用于单例类不占用大量的资源情况下，但在多数情况下，单例类是为了文件系统、数据库连接等资源创建的，除非客户端调用<code>getInstance()</code>方法，否则应该避免实例化。</p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://www.digitalocean.com/community/tutorials/java-singleton-design-pattern-best-practices-examples">【1】Java Singleton Design Pattern Best Practices with Examples</a></p>
+<h5 id="枚举类实现"><a href="#枚举类实现" class="headerlink" title="枚举类实现"></a>枚举类实现</h5><p>通过枚举类可以实现饿汉式单例，同时由于<strong>枚举类的保护机制</strong>，这种实现能够防止<strong>反射破坏</strong>：</p>
+<pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">package</span> <span class="token namespace">cn<span class="token punctuation">.</span>sillyfish<span class="token punctuation">.</span>designpattern<span class="token punctuation">.</span>creational<span class="token punctuation">.</span>singleton</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">enum</span> <span class="token class-name">EnumSingleton</span> <span class="token punctuation">&#123;</span>
+    <span class="token constant">INSTANCE</span><span class="token punctuation">;</span>
+    
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">doSomething</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">//do something</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
+<h4 id="懒汉式实现"><a href="#懒汉式实现" class="headerlink" title="懒汉式实现"></a><span id="lazyInitialization">懒汉式实现</span></h4><p>与<strong><a href="#eagerInitialization">饿汉式单例</a></strong>不同，<strong>懒汉式单例</strong>在第一次调用<code>getInstance()</code>方法时才会进行实例化。</p>
+<h5 id="简单实现-1"><a href="#简单实现-1" class="headerlink" title="简单实现"></a>简单实现</h5><pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">LazyInitializedSingleton</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token class-name">LazyInitializedSingleton</span> instance<span class="token punctuation">;</span>
+    
+    <span class="token keyword">private</span> <span class="token class-name">LazyInitializedSingleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+    
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">LazyInitializedSingleton</span> <span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>instance <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            instance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LazyInitializedSingleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">return</span> instance<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
+<p>这种实现是线程不安全的，在多线程场景下有可能获取到多个单独的实例，违背了单例模式的初衷，可以通过加锁的方式来保证线程安全。</p>
+<h5 id="synchronized保证线程安全"><a href="#synchronized保证线程安全" class="headerlink" title="synchronized保证线程安全"></a>synchronized保证线程安全</h5><pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">package</span> <span class="token namespace">cn<span class="token punctuation">.</span>sillyfish<span class="token punctuation">.</span>designpattern<span class="token punctuation">.</span>creational<span class="token punctuation">.</span>singleton</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ThreadSafeSingleton</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token class-name">ThreadSafeSingleton</span> instance<span class="token punctuation">;</span>
+    
+    <span class="token keyword">private</span> <span class="token class-name">ThreadSafeSingleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+    
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">synchronized</span> <span class="token class-name">ThreadSafeSingleton</span> <span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>instance <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            instance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ThreadSafeSingleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">return</span> instance<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
+<p>通过<code>synchronized</code>加同步锁，可以保证线程安全，但是每次调用<code>getInstance()</code>方法都要获取锁，事实上在实例化完成后，无需再加锁同步，这种加锁方式造成了额外开销。可以在获取同步锁前判断是否已经实例化来决定是否获取锁，即采用<strong><a href="#dclLock">双检锁（DCL Lock）</a></strong>的实现方式。</p>
+<h5 id="双检锁（DCL-Lock）实现"><a href="#双检锁（DCL-Lock）实现" class="headerlink" title="双检锁（DCL Lock）实现"></a><span id="dclLock">双检锁（DCL Lock）实现</span></h5><pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">package</span> <span class="token namespace">cn<span class="token punctuation">.</span>sillyfish<span class="token punctuation">.</span>designpattern<span class="token punctuation">.</span>creational<span class="token punctuation">.</span>singleton</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DCLSingleton</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">volatile</span> <span class="token class-name">DCLSingleton</span> instance<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token class-name">DCLSingleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">DCLSingleton</span> <span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>instance <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token class-name">DCLSingleton</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>instance <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                    instance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DCLSingleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">&#125;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">return</span> instance<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
+<p>通过添加一个外层判断可以在实例化完成时不再获取锁从而避免调用<code>getInstance()</code>方法的额外开销，同时内层的判断也是保证线程安全所必须的，需要两次检查，<strong>双检锁（double checked lock, DCL Lock）</strong>因而得名。同时注意到静态变量<code>instance</code>使用了<code>volatile</code>关键字，因为<code>instance = new DCLSingleton()</code>是包含多个步骤的非原子操作：</p>
+<blockquote>
+<ol>
+<li>分配内存空间</li>
+<li>构造初始化</li>
+<li><code>instance</code>变量指向对象（变量赋值）</li>
+</ol>
+</blockquote>
+<p>且底层<strong>指令重排</strong>优化并不保证<strong>2</strong>、<strong>3</strong> 步骤的顺序，即可能按照<strong>1 → 3 → 2</strong>的顺序执行，在多线程场景下另一个线程可能获取到未初始化完全的实例，使用<code>volatile</code>关键字便可以避免<strong>指令重排</strong>（<strong>1 → 2 → 3</strong>），保证构造完成后再给变量赋值，从而可以保证线程安全。</p>
+<h5 id="静态内部类实现（Bill-Pugh-Singleton）"><a href="#静态内部类实现（Bill-Pugh-Singleton）" class="headerlink" title="静态内部类实现（Bill Pugh Singleton）"></a>静态内部类实现（Bill Pugh Singleton）</h5><p>利用<strong>静态内部类</strong>在第一次使用时才加载的特性可以达到<strong>懒汉式单例</strong>的效果：</p>
+<pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">package</span> <span class="token namespace">cn<span class="token punctuation">.</span>sillyfish<span class="token punctuation">.</span>designpattern<span class="token punctuation">.</span>creational<span class="token punctuation">.</span>singleton</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BillPughSingleton</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token class-name">BillPughSingleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+    
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">SingletonHelper</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">BillPughSingleton</span> <span class="token constant">INSTANCE</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BillPughSingleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">BillPughSingleton</span> <span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token class-name">SingletonHelper</span><span class="token punctuation">.</span><span class="token constant">INSTANCE</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
+<h4 id="单例与序列化"><a href="#单例与序列化" class="headerlink" title="单例与序列化"></a>单例与序列化</h4><p>当单例类实现了<code>Serializable</code>接口并将单例实例进行<strong>序列化</strong>，<strong>反序列化</strong>时会得到一个新的单例实例（内存地址不同），破坏了单例，为了避免这种情况，只需要提供<code>readResolve()</code>方法，反序列化便会从该方法获取实例，以保证单例：</p>
+<pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">package</span> <span class="token namespace">cn<span class="token punctuation">.</span>sillyfish<span class="token punctuation">.</span>designpattern<span class="token punctuation">.</span>creational<span class="token punctuation">.</span>singleton</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>io<span class="token punctuation">.</span></span><span class="token class-name">Serializable</span></span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SerializedSingleton</span> <span class="token keyword">implements</span> <span class="token class-name">Serializable</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">long</span> serialVersionUID <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">7604766932017737115L</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token class-name">SerializedSingleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+    
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">SingletonHelper</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">SerializedSingleton</span> instance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SerializedSingleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">SerializedSingleton</span> <span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token class-name">SingletonHelper</span><span class="token punctuation">.</span>instance<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    
+    <span class="token keyword">private</span> <span class="token class-name">Object</span> <span class="token function">readResolve</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    	<span class="token keyword">return</span> <span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>【1】<a target="_blank" rel="noopener" href="https://www.digitalocean.com/community/tutorials/java-singleton-design-pattern-best-practices-examples">Java Singleton Design Pattern Best Practices with Examples</a></p>
+<p>【2】<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/136769959">单例、序列化和readResolve()方法 - 知乎 (zhihu.com)</a></p>
+<p>【3】<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1161095">Java单例模式之双检锁深入思考 - 腾讯云开发者社区-腾讯云 (tencent.com)</a></p>
+<p>【4】<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/151443733">Java并发：volatile内存可见性和指令重排 - 知乎 (zhihu.com)</a></p>
 
     </div>
 

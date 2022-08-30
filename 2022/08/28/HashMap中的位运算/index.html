@@ -20,15 +20,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="求不小于一个int的最接近的2的整数幂M源码static final int tableSizeFor(int cap) &amp;#123;     int n &#x3D; cap - 1;     n |&#x3D; n &gt;&gt;&gt; 1;     n |&#x3D; n &gt;&gt;&gt; 2;     n |&#x3D; n &gt;&gt;&gt; 4;     n |&#x3D; n &gt;&gt;&gt; 8;     n |&#x3D; n &gt;&gt;&gt; 16;     return (n &lt; 0">
+    <meta name="description" content="Jdk1.8的HashMap的实现多处使用了位运算来进行优化，本文主要记录其中比较典型的场景，并简述背后的原理。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="HashMap中的位运算">
 <meta property="og:url" content="http://example.com/2022/08/28/HashMap%E4%B8%AD%E7%9A%84%E4%BD%8D%E8%BF%90%E7%AE%97/index.html">
 <meta property="og:site_name" content="很鱼的鱼">
-<meta property="og:description" content="求不小于一个int的最接近的2的整数幂M源码static final int tableSizeFor(int cap) &amp;#123;     int n &#x3D; cap - 1;     n |&#x3D; n &gt;&gt;&gt; 1;     n |&#x3D; n &gt;&gt;&gt; 2;     n |&#x3D; n &gt;&gt;&gt; 4;     n |&#x3D; n &gt;&gt;&gt; 8;     n |&#x3D; n &gt;&gt;&gt; 16;     return (n &lt; 0">
+<meta property="og:description" content="Jdk1.8的HashMap的实现多处使用了位运算来进行优化，本文主要记录其中比较典型的场景，并简述背后的原理。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-08-28T09:49:46.000Z">
-<meta property="article:modified_time" content="2022-08-30T10:33:45.986Z">
+<meta property="article:modified_time" content="2022-08-30T17:39:52.459Z">
 <meta property="article:author" content="John Mayer">
 <meta name="twitter:card" content="summary">
 
@@ -116,7 +116,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%82%E4%B8%8D%E5%B0%8F%E4%BA%8E%E4%B8%80%E4%B8%AAint%E7%9A%84%E6%9C%80%E6%8E%A5%E8%BF%91%E7%9A%842%E7%9A%84%E6%95%B4%E6%95%B0%E5%B9%82M"><span class="nav-number">1.</span> <span class="nav-text">求不小于一个int的最接近的2的整数幂M</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BA%90%E7%A0%81"><span class="nav-number">1.1.</span> <span class="nav-text">源码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E6%80%9D%E8%B7%AF"><span class="nav-number">1.2.</span> <span class="nav-text">算法思路</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#tableSizeFor-%EF%BC%9A%E4%BC%98%E5%8C%96%E7%94%A8%E6%88%B7%E8%BE%93%E5%85%A5%E5%AE%B9%E9%87%8F"><span class="nav-number">1.</span> <span class="nav-text">tableSizeFor()：优化用户输入容量</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -210,7 +210,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-08-30 18:33:45" itemprop="dateModified" datetime="2022-08-30T18:33:45+08:00">2022-08-30</time>
+      <time title="修改时间：2022-08-31 01:39:52" itemprop="dateModified" datetime="2022-08-31T01:39:52+08:00">2022-08-31</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -232,7 +232,10 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h3 id="求不小于一个int的最接近的2的整数幂M"><a href="#求不小于一个int的最接近的2的整数幂M" class="headerlink" title="求不小于一个int的最接近的2的整数幂M"></a>求不小于一个int的最接近的2的整数幂M</h3><h4 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h4><pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> <span class="token function">tableSizeFor</span><span class="token punctuation">(</span><span class="token keyword">int</span> cap<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <p><strong>Jdk1.8</strong>的<code>HashMap</code>的实现多处使用了<strong>位运算</strong>来进行优化，本文主要记录其中比较典型的场景，并简述背后的原理。</p>
+<span id="more"></span>
+
+<h3 id="tableSizeFor-：优化用户输入容量"><a href="#tableSizeFor-：优化用户输入容量" class="headerlink" title="tableSizeFor()：优化用户输入容量"></a>tableSizeFor()：优化用户输入容量</h3><pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> <span class="token function">tableSizeFor</span><span class="token punctuation">(</span><span class="token keyword">int</span> cap<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
     <span class="token keyword">int</span> n <span class="token operator">=</span> cap <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
     n <span class="token operator">|=</span> n <span class="token operator">>>></span> <span class="token number">1</span><span class="token punctuation">;</span>
     n <span class="token operator">|=</span> n <span class="token operator">>>></span> <span class="token number">2</span><span class="token punctuation">;</span>
@@ -242,23 +245,24 @@
     <span class="token keyword">return</span> <span class="token punctuation">(</span>n <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token number">1</span> <span class="token operator">:</span> <span class="token punctuation">(</span>n <span class="token operator">>=</span> <span class="token constant">MAXIMUM_CAPACITY</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token constant">MAXIMUM_CAPACITY</span> <span class="token operator">:</span> n <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span></code></pre>
 
-<h4 id="算法思路"><a href="#算法思路" class="headerlink" title="算法思路"></a>算法思路</h4><ul>
-<li><p>2的整数次幂的二进制表示只有一位为1（最高有效位）</p>
-</li>
-<li><p>任意非2的整数幂int的M值为其最高有效位的右一位变为1其余位均为0的数，也可通过将其最高有效位及其左侧位都变为1然后+1得到</p>
-</li>
-<li><p>代码过程</p>
-<ul>
-<li>右移一位再或运算，保证最高有效位及左一位（如有）变为1</li>
-<li>再右移两位再或运算，保证最高有效为及其左侧3位（如有）变为1</li>
-<li>…</li>
-<li>最后右移16位再或运算，能保证int(32位)的最高有效位及其左侧均为1</li>
+<p><code>tableSizeFor()</code>方法返回不小于输入整数<code>cap</code>值的最小2的整数次幂，用于根据用户输入的<code>capacity</code>计算<strong>bin数组</strong>的初始长度，以保证<strong>bin数组</strong>的长度为2的整数次幂。首先，对于2的整数次幂的二进制表示具有如下特征：</p>
+<blockquote>
+<ol>
+<li>只存在一个为1的位</li>
+<li>不小于整数<code>cap</code>值的最小2的整数次幂：cap为2的整数幂：<code>cap</code>本身；cap非2的整数幂：<strong>最高有效位</strong>及其右侧位都变为1然后+1</li>
+</ol>
+</blockquote>
+<p>根据上述的特征，只需要通过<strong>位运算</strong>将<code>cap</code>的<strong>最高有效位</strong>及其右侧位都变为1然后+1即可得到结果：</p>
+<blockquote>
+<ol>
+<li><code>n |= n &gt;&gt;&gt; 1</code>，保证<strong>最高有效位</strong>及左一位（如有）变为1</li>
+<li><code>n |= n &gt;&gt;&gt; 2</code>，保证<strong>最高有效位</strong>及其左侧3位（如有）变为1</li>
+<li>……</li>
+<li><code>n |= n &gt;&gt;&gt; 16</code>，保证int(32位)的最高有效位及其左侧均为1</li>
 <li>+1得到结果</li>
-</ul>
-</li>
-<li><p>初始值-1可以保证算法对2的整数次幂也有效，避免对于8得到16这样的结果</p>
-</li>
-</ul>
+</ol>
+</blockquote>
+<p><code>int n = cap - 1</code>初始值减1可以保证算法对2的整数次幂也有效，避免对于8得到16这样的结果</p>
 
     </div>
 
