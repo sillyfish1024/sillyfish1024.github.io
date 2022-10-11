@@ -1407,7 +1407,7 @@ pre .javascript .function {
   position: relative;
   box-sizing: border-box;
   width: 80%;
-  max-width: 820px;
+  max-width: 920px;
   height: 100%;
 }
 @media (max-width: 780px) {
@@ -1740,11 +1740,11 @@ pre .javascript .function {
   align-items: center;
   justify-content: space-between;
   width: 80%;
-  max-width: 820px;
+  max-width: 920px;
   height: 100%;
 }
 .header-wrapper .header-content.has-first-screen {
-  max-width: 984px;
+  max-width: 1104px;
 }
 @media (max-width: 780px) {
   .header-wrapper .header-content {
