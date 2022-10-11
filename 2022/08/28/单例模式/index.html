@@ -168,7 +168,7 @@
     
         <span class="article-update-date article-meta-item">
         <i class="fas fa-file-pen"></i>&nbsp;
-        <span class="pc">2022-08-31 01:48:14</span>
+        <span class="pc">2022-10-11 21:10:37</span>
     </span>
     
     
@@ -237,7 +237,7 @@
 <pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">package</span> <span class="token namespace">cn<span class="token punctuation">.</span>sillyfish<span class="token punctuation">.</span>designpattern<span class="token punctuation">.</span>creational<span class="token punctuation">.</span>singleton</span><span class="token punctuation">;</span>
 
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">StaticBlockSingleton</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token class-name">StaticBlockSingleton</span> instance<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">StaticBlockSingleton</span> instance<span class="token punctuation">;</span>
     
     <span class="token keyword">private</span> <span class="token class-name">StaticBlockSingleton</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
     
@@ -360,7 +360,7 @@
     
     <span class="token keyword">private</span> <span class="token class-name">Object</span> <span class="token function">readResolve</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
     	<span class="token keyword">return</span> <span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-	<span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span></code></pre>
 
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>【1】<a class="link"   target="_blank" rel="noopener" href="https://www.digitalocean.com/community/tutorials/java-singleton-design-pattern-best-practices-examples" >Java Singleton Design Pattern Best Practices with Examples<i class="fas fa-external-link-alt"></i></a></p>
